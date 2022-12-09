@@ -1,0 +1,5 @@
+Medet 3.5 20000
+Azamat 4.7 20000
+Ali 1.6 20000
+Togzhan 2.9 20000
+Aidana 4.8 20000
