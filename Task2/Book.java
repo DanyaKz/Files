@@ -36,6 +36,4 @@ public class Book {
     public void increasePrice() {
         this.price *= 1.15;
     }
-
-
 }
