@@ -1,8 +1,6 @@
 package Task2;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -29,13 +27,13 @@ public class Main {
     }
 
     static void inputFile() {
-        try {
-            FileInputStream fis = new FileInputStream("src/Task2/input.txt");
-            byte[] bytes = fis.readAllBytes();
-            for (byte b : bytes) {
+        try (FileInputStream fis = new FileInputStream("src/Task2/input.txt");
+             BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(fis.readAllBytes()))) {
+
+            for (byte b : bis.readAllBytes()) {
                 combinedData.append((char) b);
             }
-            fis.close();
+            System.out.println(combinedData);
             addBooks();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,15 +69,15 @@ public class Main {
     }
 
     static void writeFile() {
-        try {
-            FileOutputStream fos = new FileOutputStream("src/Task2/output.txt");
+        try (FileOutputStream fos = new FileOutputStream("src/Task2/output.txt");
+             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+
             for (Book book : books) {
                 String prepareData = String.format("%s %d%n",
                         book.getName(), book.getPrice());
-                fos.write(prepareData.getBytes());
+                bos.write(prepareData.getBytes());
             }
 
-            fos.close();
             System.out.println("Hi!");
         } catch (IOException e) {
             throw new RuntimeException(e);

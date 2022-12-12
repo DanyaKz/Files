@@ -1,8 +1,6 @@
 package Task1;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -21,13 +19,12 @@ public class Main {
 
     static void readFile() {
 
-        try {
-            FileInputStream fis = new FileInputStream("src/Task1/input.txt");
-            byte[] bytes = fis.readAllBytes();
-            for (byte b : bytes) {
+        try (FileInputStream fis = new FileInputStream("src/Task1/input.txt");
+             BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(fis.readAllBytes()))) {
+
+            for (byte b : bis.readAllBytes()) {
                 combinedData.append((char) b);
             }
-            fis.close();
             addStudents();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,15 +57,15 @@ public class Main {
     }
 
     static void writeFile() {
-        try {
-            FileOutputStream fos = new FileOutputStream("src/Task1/output.txt");
+        try (FileOutputStream fos = new FileOutputStream("src/Task1/output.txt");
+             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+
             for (Student s : students) {
                 String prepareStData = String.format("%s will take %d(%s)%n",
                         s.getName(), s.getScholarship(), s.getMark());
                 byte[] bytes = prepareStData.getBytes();
-                fos.write(bytes);
+                bos.write(bytes);
             }
-            fos.close();
             System.out.println("Done");
         } catch (Exception e) {
             throw new RuntimeException(e);
