@@ -20,7 +20,7 @@ public class Main {
     static void readFile() {
 
         try (FileInputStream fis = new FileInputStream("src/Task1/input.txt");
-             BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(fis.readAllBytes()))) {
+             BufferedInputStream bis = new BufferedInputStream(fis)) {
 
             for (byte b : bis.readAllBytes()) {
                 combinedData.append((char) b);

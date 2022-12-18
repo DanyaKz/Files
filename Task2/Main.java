@@ -1,10 +1,10 @@
 package Task2;
 
+import com.sun.source.tree.Tree;
+
 import java.io.*;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -12,7 +12,9 @@ public class Main {
     static SortedSet<Book> books = new TreeSet<Book>(bookComparator.reversed());
     static StringBuilder combinedData = new StringBuilder();
 
-    static private class BookComparator implements Comparator<Book> {
+
+
+    static private class BookComparator implements Comparator<Book>, Serializable {
 
         @Override
         public int compare(Book b1, Book b2) {
@@ -24,11 +26,12 @@ public class Main {
     public static void main(String[] args) {
         inputFile();
         writeFile();
+        printData();
     }
 
     static void inputFile() {
         try (FileInputStream fis = new FileInputStream("src/Task2/input.txt");
-             BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(fis.readAllBytes()))) {
+             BufferedInputStream bis = new BufferedInputStream(fis)) {
 
             for (byte b : bis.readAllBytes()) {
                 combinedData.append((char) b);
@@ -46,42 +49,42 @@ public class Main {
             String[] bookArr = book.split("( )");
             books.add(new Book(bookArr[0], bookArr[1], Integer.parseInt(bookArr[2]), Integer.parseInt(bookArr[3])));
         }
-        booksResearch();
+        booksResearchStream();
     }
 
-    static void booksResearch() {
-        Iterator<Book> iterBooks = books.iterator();
-        while (iterBooks.hasNext()) {
-            Book book = iterBooks.next();
+    static void booksResearchStream(){
+        books.stream().filter(book -> book.getYear() < 2022 - 30).forEach(Book::decreasePrice);
+        books.stream().filter(book -> book.getYear() > 2022 - 5).forEach(Book::increasePrice);
+        books.removeIf(book -> book.getGenre().equals("fantasy"));
 
-            if (book.getGenre().equals("fantasy")) {
-                iterBooks.remove();
-                continue;
-            }
-
-            if (book.getYear() < 2022 - 30) {
-                book.decreasePrice();
-            } else if (book.getYear() > 2022 - 5) {
-                book.increasePrice();
-            }
-
-        }
     }
+
 
     static void writeFile() {
-        try (FileOutputStream fos = new FileOutputStream("src/Task2/output.txt");
-             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
-
-            for (Book book : books) {
-                String prepareData = String.format("%s %d%n",
-                        book.getName(), book.getPrice());
-                bos.write(prepareData.getBytes());
-            }
-
+        try (ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream("src/Task2/output.txt"))) {
+//            ArrayList<Book> write = new ArrayList<Book>(Arrays.<Book>asList((Book[]) books.toArray()));
+            TreeSet<Book> writeBooks = (TreeSet<Book>) books;
+            oos.writeObject(writeBooks);
             System.out.println("Hi!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    static void printData(){
+        SortedSet<Book> readBooks;
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src/Task2/output.txt"))){
+
+            readBooks = (TreeSet<Book>) ois.readObject();
+
+        }catch (IOException | ClassNotFoundException | ClassCastException ioe){
+            throw new RuntimeException(ioe);
+        }
+
+        System.out.println(readBooks);
+
+    }
+
 
 }

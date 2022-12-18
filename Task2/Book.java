@@ -1,6 +1,8 @@
 package Task2;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private String name;
     private String genre;
     private int year;
@@ -35,5 +37,15 @@ public class Book {
 
     public void increasePrice() {
         this.price *= 1.15;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "name='" + name + '\'' +
+                ", genre='" + genre + '\'' +
+                ", year=" + year +
+                ", price=" + price +
+                '}';
     }
 }
