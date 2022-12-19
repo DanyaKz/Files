@@ -3,6 +3,8 @@ package Task2;
 import java.io.Serializable;
 
 public class Book implements Serializable {
+
+    public static final long serialVersionUID = 1L;
     private String name;
     private String genre;
     private int year;

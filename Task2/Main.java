@@ -15,7 +15,7 @@ public class Main {
 
 
     static private class BookComparator implements Comparator<Book>, Serializable {
-
+        public static final long serialVersionUID = 2L;
         @Override
         public int compare(Book b1, Book b2) {
             return Integer.compare(b1.getPrice(), b2.getPrice());
@@ -78,8 +78,8 @@ public class Main {
 
             readBooks = (TreeSet<Book>) ois.readObject();
 
-        }catch (IOException | ClassNotFoundException | ClassCastException ioe){
-            throw new RuntimeException(ioe);
+        }catch (ClassNotFoundException | ClassCastException | IOException e){
+            throw new RuntimeException(e);
         }
 
         System.out.println(readBooks);
